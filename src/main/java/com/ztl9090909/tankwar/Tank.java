@@ -1,10 +1,13 @@
 package com.ztl9090909.tankwar;
 
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.Media;
 import javax.swing.ImageIcon;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class Tank {
 
@@ -165,6 +168,11 @@ public class Tank {
         Missle  missle = new Missle(x + getImage().getWidth(null) / 2 - 6,
                 y + getImage().getHeight(null) / 2 - 6, false, direction);
         GameClient.getInstance().getMissles().add(missle);
+
+        Media sound = new Media(new File("assets/audios/shoot.wav").toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+
     }
 
     private boolean stopped;
