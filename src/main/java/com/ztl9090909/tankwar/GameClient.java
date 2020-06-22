@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.awt.Color.BLACK;
+
 public class GameClient extends JComponent {
 
     private Tank playerTank;
@@ -42,7 +44,7 @@ public class GameClient extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        g.setColor(Color.BLACK);
+        g.setColor(BLACK);
         playerTank.draw(g);
         for (Tank tank : enemyTank) {
             tank.draw(g);
