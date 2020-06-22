@@ -1,7 +1,9 @@
 package com.ztl9090909.tankwar;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 public class Tank {
@@ -103,6 +105,8 @@ public class Tank {
     }
 
     void draw(Graphics g) {
+        int oldX = x;
+        int oldY = y;
         this.determineDirection();
         this.move();
 
@@ -110,9 +114,30 @@ public class Tank {
         else if ( x > 800 - getImage().getWidth(null)) x = 800 - getImage().getWidth(null);
         if ( y < 0 ) y = 0;
         else if (y > 600 - getImage().getHeight(null)) y = 600 - getImage().getHeight(null);
+
+        Rectangle rec = this.getRectangle();
+        for (Wall wall : GameClient.getInstance().getWalls()) {
+            if (rec.intersects(wall.getRectangle())) {
+                x = oldX;
+                y = oldY;
+                break;
+            }
+        }
+
+        for (Tank tank : GameClient.getInstance().getEnemyTank()) {
+            if (tank != this && rec.intersects(tank.getRectangle())) {
+                x = oldX;
+                y = oldY;
+                break;
+            }
+        }
+
         g.drawImage(this.getImage(), this.x, this.y, null);
     }
 
+    public Rectangle getRectangle() {
+        return new Rectangle(x, y, getImage().getWidth(null), getImage().getHeight(null));
+    }
 
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -130,7 +155,6 @@ public class Tank {
                 break;
         }
         this.determineDirection();
-        this.move();
     }
 
     private boolean stopped;
@@ -167,7 +191,6 @@ public class Tank {
                 right = false;
                 break;
         }
-
-
+        this.determineDirection();
     }
 }

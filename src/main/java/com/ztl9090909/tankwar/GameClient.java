@@ -13,9 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.awt.Color.BLACK;
-
 public class GameClient extends JComponent {
+
+    private static final GameClient INSTANCE = new GameClient();
+
+    public static GameClient getInstance(){
+        return INSTANCE;
+    }
 
     private Tank playerTank;
 
@@ -23,18 +27,24 @@ public class GameClient extends JComponent {
 
     private List<Wall> walls;
 
+    List<Tank> getEnemyTank() { return enemyTank; }
+
+    List<Wall> getWalls() {
+        return walls;
+    }
+
     private GameClient() {
 
         this.playerTank = new Tank(400, 100, Direction.DOWN);
         this.enemyTank = new ArrayList<>(12);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 4; j++) {
-                this.enemyTank.add(new Tank(200 + j * 80, 400 + 40 * i, true, Direction.UP));
+                this.enemyTank.add(new Tank(200 + j * 120, 400 + 40 * i, true, Direction.UP));
             }
         }
         this.walls = Arrays.asList(
                 new Wall(200, 140, true, 15),
-                new Wall(200, 540, true, 15),
+                new Wall(200, 520, true, 15),
                 new Wall(100, 80, false, 15),
                 new Wall(700, 80, false, 15)
         );
@@ -44,7 +54,8 @@ public class GameClient extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
-        g.setColor(BLACK);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 800, 600);
         playerTank.draw(g);
         for (Tank tank : enemyTank) {
             tank.draw(g);
@@ -60,6 +71,7 @@ public class GameClient extends JComponent {
         frame.setTitle("坦克大战！");
         frame.setIconImage(new ImageIcon("assets/images/icon.png").getImage());
         final GameClient client = new GameClient();
+        client.repaint();
         frame.add(client);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
