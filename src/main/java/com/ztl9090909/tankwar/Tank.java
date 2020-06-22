@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.Random;
 
 public class Tank {
 
@@ -54,22 +55,22 @@ public class Tank {
             case UP:
                 y -= 5;
                 break;
-            case UPLEFT:
+            case LEFT_UP:
                 x -= 5;
                 y -= 5;
                 break;
-            case UPRIGHT:
+            case RIGHT_UP:
                 x += 5;
                 y -= 5;
                 break;
             case DOWN:
                 y += 5;
                 break;
-            case DOWNLEFT:
+            case LEFT_DOWN:
                 x -= 5;
                 y += 5;
                 break;
-            case DOWNRIGHT:
+            case RIGHT_DOWN:
                 x += 5;
                 y += 5;
                 break;
@@ -85,26 +86,7 @@ public class Tank {
 
     Image getImage() {
         String prefix = enemy ? "e" : "";
-        switch (direction) {
-            case UP:
-                return new ImageIcon("assets/images/" + prefix + "tankU.gif").getImage();
-            case UPLEFT:
-                return new ImageIcon("assets/images/" + prefix + "tankLU.gif").getImage();
-            case UPRIGHT:
-                return new ImageIcon("assets/images/" + prefix + "tankRU.gif").getImage();
-            case DOWN:
-                return new ImageIcon("assets/images/" + prefix + "tankD.gif").getImage();
-            case DOWNLEFT:
-                return new ImageIcon("assets/images/" + prefix + "tankLD.gif").getImage();
-            case DOWNRIGHT:
-                return new ImageIcon("assets/images/" + prefix + "tankRD.gif").getImage();
-            case LEFT:
-                return new ImageIcon("assets/images/" + prefix + "tankL.gif").getImage();
-            case RIGHT:
-                return new ImageIcon("assets/images/" + prefix + "tankR.gif").getImage();
-
-        }
-        return null;
+        return direction.getImage(prefix + "tank");
     }
 
     void draw(Graphics g) {
@@ -159,7 +141,9 @@ public class Tank {
             case KeyEvent.VK_CONTROL:
                 fire();
                 break;
-
+            case KeyEvent.VK_A:
+                superFire();
+                break;
         }
         this.determineDirection();
     }
@@ -169,10 +153,26 @@ public class Tank {
                 y + getImage().getHeight(null) / 2 - 6, false, direction);
         GameClient.getInstance().getMissles().add(missle);
 
+        playAudio("shoot.wav");
+
+    }
+
+    private void superFire(){
+        for (Direction direction : Direction.values()) {
+            Missle missle = new Missle(x + getImage().getWidth(null) / 2 - 6,
+                    y + getImage().getHeight(null) / 2 - 6, enemy, direction);
+            GameClient.getInstance().getMissles().add(missle);
+        }
+
+        String audioFile = new Random().nextBoolean() ? "supershoot.aiff" : "supershoot.wav";
+        playAudio(audioFile);
+
+    }
+
+    private void playAudio(String fileName){
         Media sound = new Media(new File("assets/audios/shoot.wav").toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();
-
     }
 
     private boolean stopped;
@@ -181,10 +181,10 @@ public class Tank {
         if (!up && !right && !down && !left) {
             this.stopped = true;
         } else {
-            if (up && left && !down && !right) this.direction = Direction.UPLEFT;
-            else if (up && right && !down && !left) this.direction = Direction.UPRIGHT;
-            else if (down && left && !up && !right) this.direction = Direction.DOWNLEFT;
-            else if (down && right && !up && !left) this.direction = Direction.DOWNRIGHT;
+            if (up && left && !down && !right) this.direction = Direction.LEFT_UP;
+            else if (up && right && !down && !left) this.direction = Direction.RIGHT_UP;
+            else if (down && left && !up && !right) this.direction = Direction.LEFT_DOWN;
+            else if (down && right && !up && !left) this.direction = Direction.RIGHT_DOWN;
             else if (up && !right && !down && !left) this.direction = Direction.UP;
             else if (!up && !right && down && !left) this.direction = Direction.DOWN;
             else if (!up && !right && !down && left) this.direction = Direction.LEFT;
