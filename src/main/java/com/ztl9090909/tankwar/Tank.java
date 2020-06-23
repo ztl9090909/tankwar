@@ -1,13 +1,9 @@
 package com.ztl9090909.tankwar;
 
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.Media;
-
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.Random;
 
 public class Tank {
@@ -154,7 +150,7 @@ public class Tank {
                 y + getImage().getHeight(null) / 2 - 6, false, direction);
         GameClient.getInstance().getMissiles().add(missle);
 
-        playAudio("shoot.wav");
+        Tools.playAudio("shoot.wav");
 
     }
 
@@ -166,14 +162,8 @@ public class Tank {
         }
 
         String audioFile = new Random().nextBoolean() ? "supershoot.aiff" : "supershoot.wav";
-        playAudio(audioFile);
+        Tools.playAudio(audioFile);
 
-    }
-
-    private void playAudio(String fileName){
-        Media sound = new Media(new File("assets/audios/shoot.wav").toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
     }
 
     private boolean stopped;
