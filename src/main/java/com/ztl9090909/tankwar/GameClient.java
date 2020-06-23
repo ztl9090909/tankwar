@@ -27,7 +27,15 @@ public class GameClient extends JComponent {
 
     private List<Wall> walls;
 
-    private List<Missle> missles;
+    private List<Missle> missiles;
+
+    synchronized void add(Missle missile){
+        missiles.add(missile);
+    }
+
+    Tank getPlayerTank() {
+        return playerTank;
+    }
 
     private static void run() {
     }
@@ -38,20 +46,15 @@ public class GameClient extends JComponent {
         return walls;
     }
 
-    public List<Missle> getMissles() {
-        return missles;
+    public List<Missle> getMissiles() {
+        return missiles;
     }
 
     private GameClient() {
 
         this.playerTank = new Tank(400, 100, Direction.DOWN);
-        this.enemyTank = new ArrayList<>(12);
-        this.missles = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 4; j++) {
-                this.enemyTank.add(new Tank(200 + j * 120, 400 + 40 * i, true, Direction.UP));
-            }
-        }
+        this.missiles = new ArrayList<>();
+        this.initEnemyTank();
         this.walls = Arrays.asList(
                 new Wall(200, 140, true, 15),
                 new Wall(200, 520, true, 15),
@@ -62,11 +65,25 @@ public class GameClient extends JComponent {
         this.setPreferredSize(new Dimension(800, 600));
     }
 
+    private void initEnemyTank() {
+        this.enemyTank = new ArrayList<>(12);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 4; j++) {
+                this.enemyTank.add(new Tank(200 + j * 120, 400 + 40 * i, true, Direction.UP));
+            }
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
         playerTank.draw(g);
+
+        enemyTank.removeIf(t -> !t.isLive());
+        if (enemyTank.isEmpty()){
+            this.initEnemyTank();
+        }
         for (Tank tank : enemyTank) {
             tank.draw(g);
         }
@@ -74,7 +91,8 @@ public class GameClient extends JComponent {
             wall.draw(g);
         }
 
-        for (Missle missle : missles) {
+        missiles.removeIf(m -> !m.isLive());
+        for (Missle missle : missiles) {
             missle.draw(g);
         }
     }

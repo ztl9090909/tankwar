@@ -2,7 +2,7 @@ package com.ztl9090909.tankwar;
 
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
-import javax.swing.ImageIcon;
+
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -39,6 +39,26 @@ public class Tank {
 
     private boolean up, down, left, right;
 
+    private boolean live = true;
+
+    private int hp = 100;
+
+    int getHp() {
+        return hp;
+    }
+
+    void setHp(int hp) {
+        this.hp = hp;
+    }
+
+    boolean isLive() {
+        return live;
+    }
+
+    void setLive(boolean live) {
+        this.live = live;
+    }
+
     public Tank(int x, int y, Direction direction) {
         this( x, y, false,direction);
     }
@@ -48,6 +68,10 @@ public class Tank {
         this.y = y;
         this.enemy = enemy;
         this.direction = direction;
+    }
+
+    boolean isEnemy() {
+        return enemy;
     }
 
     void move() {
@@ -63,6 +87,10 @@ public class Tank {
     }
 
     void draw(Graphics g) {
+        if (this.live){
+
+        }
+
         int oldX = x;
         int oldY = y;
         this.determineDirection();
@@ -93,7 +121,7 @@ public class Tank {
         g.drawImage(this.getImage(), this.x, this.y, null);
     }
 
-    public Rectangle getRectangle() {
+    Rectangle getRectangle() {
         return new Rectangle(x, y, getImage().getWidth(null), getImage().getHeight(null));
     }
 
@@ -124,7 +152,7 @@ public class Tank {
     private void fire(){
         Missle  missle = new Missle(x + getImage().getWidth(null) / 2 - 6,
                 y + getImage().getHeight(null) / 2 - 6, false, direction);
-        GameClient.getInstance().getMissles().add(missle);
+        GameClient.getInstance().getMissiles().add(missle);
 
         playAudio("shoot.wav");
 
@@ -134,7 +162,7 @@ public class Tank {
         for (Direction direction : Direction.values()) {
             Missle missle = new Missle(x + getImage().getWidth(null) / 2 - 6,
                     y + getImage().getHeight(null) / 2 - 6, enemy, direction);
-            GameClient.getInstance().getMissles().add(missle);
+            GameClient.getInstance().getMissiles().add(missle);
         }
 
         String audioFile = new Random().nextBoolean() ? "supershoot.aiff" : "supershoot.wav";
