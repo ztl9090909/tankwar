@@ -12,6 +12,8 @@ import java.util.Random;
 
 public class Tank {
 
+    public static final int MOVE_SPEED = 5;
+
     private boolean enemy;
 
     private int x;
@@ -51,37 +53,8 @@ public class Tank {
     void move() {
         if (this.stopped) return;
 
-        switch (direction) {
-            case UP:
-                y -= 5;
-                break;
-            case LEFT_UP:
-                x -= 5;
-                y -= 5;
-                break;
-            case RIGHT_UP:
-                x += 5;
-                y -= 5;
-                break;
-            case DOWN:
-                y += 5;
-                break;
-            case LEFT_DOWN:
-                x -= 5;
-                y += 5;
-                break;
-            case RIGHT_DOWN:
-                x += 5;
-                y += 5;
-                break;
-            case LEFT:
-                x -= 5;
-                break;
-            case RIGHT:
-                x += 5;
-                break;
-
-        }
+        x += direction.xFactor * MOVE_SPEED;
+        y += direction.yFactor * MOVE_SPEED;
     }
 
     Image getImage() {
