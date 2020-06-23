@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,6 +34,12 @@ public class GameClient extends JComponent {
     private List<Wall> walls;
 
     private List<Missile> missiles;
+
+    private Blood blood;
+
+    Blood getBlood() {
+        return blood;
+    }
 
     private List<Explosion> explosions;
 
@@ -64,9 +71,10 @@ public class GameClient extends JComponent {
         this.playerTank = new Tank(400, 100, Direction.DOWN);
         this.missiles = new CopyOnWriteArrayList<>();
         this.explosions = new ArrayList<>();
+        this.blood = new Blood(400, 250);
         this.walls = Arrays.asList(
-                new Wall(200, 140, true, 15),
-                new Wall(200, 540, true, 15),
+                new Wall(280, 140, true, 12),
+                new Wall(280, 540, true, 12),
                 new Wall(100, 160, false, 12),
                 new Wall(700, 160, false, 12)
         );
@@ -82,6 +90,8 @@ public class GameClient extends JComponent {
             }
         }
     }
+
+    private final static Random RANDOM = new Random();
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -101,8 +111,17 @@ public class GameClient extends JComponent {
             g.drawString("Player Tank HP: " + playerTank.getHp(), 10, 90);
             g.drawString("Enemy Left: " + enemyTanks.size(), 10, 110);
             g.drawString("Enemy Killed: " + enemyKilled.get(), 10, 130);
+            g.drawImage(Tools.getImage("tree.png"), 720, 10, null);
+            g.drawImage(Tools.getImage("tree.png"), 10, 520, null);
 
             playerTank.draw(g);
+
+            if (playerTank.isDying() && RANDOM.nextInt(3) == 2) {
+                blood.setLive(true);
+            }
+            if (blood.isLive()) {
+                blood.draw(g);
+            }
 
             int conut = enemyTanks.size();
             enemyTanks.removeIf(t -> !t.isLive());

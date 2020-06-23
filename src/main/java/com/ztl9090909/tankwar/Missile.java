@@ -22,7 +22,7 @@ class Missile {
         return live;
     }
 
-    void setLive(boolean live) {
+    private void setLive(boolean live) {
         this.live = live;
     }
 
